@@ -1,6 +1,7 @@
 package kr.co.prnd.sample
 
 import android.os.Bundle
+import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
 import kr.co.prnd.sample.databinding.ActivityMainBinding
 
@@ -13,5 +14,10 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         binding.webView.loadUrl("file:///android_asset/sample.html")
+        binding.webView.setupFileChooser()
+    }
+
+    private fun WebView.setupFileChooser() {
+        webChromeClient = PrndWebChromeClient(this@MainActivity)
     }
 }
