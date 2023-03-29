@@ -2,13 +2,22 @@ package kr.co.prnd.sample
 
 import android.content.Context
 import android.content.Intent
+import android.util.Log
+import com.gun0912.tedonactivityresult.coroutine.TedOnActivityResult
 
 class FileChooser(
     private val context: Context,
 ) {
-    fun show() {
+    suspend fun show() {
         val chooserIntent = createChooserIntent()
-        context.startActivity(chooserIntent)
+
+        val intent: Intent? = TedOnActivityResult.with(context)
+            .startActivityForResult(chooserIntent)
+            .data
+
+        // 선택 X: null
+        // 선택 O: Intent { dat=content://com.android.providers.media.documents/... flg=0x43 }
+        Log.i("TEST", "$intent")
     }
 
     private fun createChooserIntent(): Intent {

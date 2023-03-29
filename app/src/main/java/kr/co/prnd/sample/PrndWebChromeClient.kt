@@ -5,9 +5,12 @@ import android.net.Uri
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
 import android.webkit.WebView
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class PrndWebChromeClient(
-    private val context: Context,
+    context: Context,
+    private val coroutineScope: CoroutineScope,
 ) : WebChromeClient() {
     private val fileChooser = FileChooser(context)
 
@@ -16,7 +19,9 @@ class PrndWebChromeClient(
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserParams: FileChooserParams?
     ): Boolean {
-        fileChooser.show()
+        coroutineScope.launch {
+            fileChooser.show()
+        }
         return super.onShowFileChooser(webView, filePathCallback, fileChooserParams)
     }
 }

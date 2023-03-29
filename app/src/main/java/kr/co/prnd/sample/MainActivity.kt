@@ -3,6 +3,7 @@ package kr.co.prnd.sample
 import android.os.Bundle
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import kr.co.prnd.sample.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -18,6 +19,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun WebView.setupFileChooser() {
-        webChromeClient = PrndWebChromeClient(this@MainActivity)
+        webChromeClient = PrndWebChromeClient(
+            context = this@MainActivity,
+            coroutineScope = lifecycleScope,
+        )
     }
 }
