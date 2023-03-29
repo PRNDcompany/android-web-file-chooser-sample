@@ -57,6 +57,10 @@ class FileChooser(
                 )
                 filePathCallback.onReceiveValue(result)
             }
+            is FileChooserResult.Files -> {
+                fileChooserResult.uris.forEach(::takePersistableUriPermission)
+                filePathCallback.onReceiveValue(fileChooserResult.uris.toTypedArray())
+            }
         }
     }
 

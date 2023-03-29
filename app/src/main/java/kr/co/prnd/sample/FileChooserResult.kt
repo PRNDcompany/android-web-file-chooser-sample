@@ -12,6 +12,10 @@ sealed interface FileChooserResult {
         val uri: Uri,
     ) : FileChooserResult
 
+    data class Files(
+        val uris: List<Uri>,
+    ) : FileChooserResult
+
     companion object {
         fun parse(
             resultCode: Int,
@@ -20,10 +24,17 @@ sealed interface FileChooserResult {
             if (data == null) return Empty
 
             val singleFileChooserData = data.data
+            val multipleFileChooserData = data.getMultipleFileChooserData()
             return when {
                 singleFileChooserData != null -> File(resultCode, data, singleFileChooserData)
+                multipleFileChooserData != null -> Files(multipleFileChooserData)
                 else -> Empty
             }
+        }
+
+        private fun Intent.getMultipleFileChooserData(): List<Uri>? {
+            val clipData = clipData ?: return null
+            return (0 until clipData.itemCount).map { clipData.getItemAt(it).uri }
         }
     }
 }
