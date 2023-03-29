@@ -11,13 +11,16 @@ class FileChooser(
     suspend fun show() {
         val chooserIntent = createChooserIntent()
 
-        val intent: Intent? = TedOnActivityResult.with(context)
+        val activityResult = TedOnActivityResult.with(context)
             .startActivityForResult(chooserIntent)
-            .data
+        val fileChooserResult = FileChooserResult.parse(
+            resultCode = activityResult.resultCode,
+            data = activityResult.data,
+        )
 
-        // 선택 X: null
-        // 선택 O: Intent { dat=content://com.android.providers.media.documents/... flg=0x43 }
-        Log.i("TEST", "$intent")
+        // 선택 X: kr.co.prnd.sample.FileChooserResult$Empty@cca43f2
+        // 선택 O: File(resultCode=-1, data=Intent { dat=content://com.android.providers.media.documents/... flg=0x43 }, uri=content://com.android.providers.media.documents/document/image%3A1000004727)
+        Log.i("TEST", "$fileChooserResult")
     }
 
     private fun createChooserIntent(): Intent {
