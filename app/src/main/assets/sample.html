@@ -22,6 +22,22 @@
     </style>
 </head>
 <body>
-<input type="file">
+<input type="file" id="file">
+
+<script>
+    const fileInput = document.getElementById('file');
+
+    fileInput.addEventListener('change', (event) => {
+        const fileReader = new FileReader();
+        fileReader.onload = (event) => {
+            const contents = event.target.result;
+            console.log("성공");
+            console.log(contents); // 파일 내용 출력
+        };
+
+        const file = event.target.files[0];
+        fileReader.readAsBinaryString(file);
+    });
+</script>
 </body>
 </html>

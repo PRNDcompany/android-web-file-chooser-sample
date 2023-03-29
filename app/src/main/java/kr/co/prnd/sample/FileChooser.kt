@@ -43,6 +43,7 @@ class FileChooser(
         when (fileChooserResult) {
             FileChooserResult.Empty -> filePathCallback.onReceiveValue(null)
             is FileChooserResult.File -> {
+                takePersistableUriPermission(fileChooserResult.uri)
                 val result = WebChromeClient.FileChooserParams.parseResult(
                     fileChooserResult.resultCode,
                     fileChooserResult.data,
@@ -50,5 +51,11 @@ class FileChooser(
                 filePathCallback.onReceiveValue(result)
             }
         }
+    }
+
+    private fun takePersistableUriPermission(uri: Uri) {
+        val takeFlags =
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+        context.contentResolver.takePersistableUriPermission(uri, takeFlags)
     }
 }
