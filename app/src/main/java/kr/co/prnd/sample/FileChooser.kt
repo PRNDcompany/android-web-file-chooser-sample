@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.webkit.ValueCallback
 import android.webkit.WebChromeClient
+import android.webkit.WebChromeClient.*
 import com.gun0912.tedonactivityresult.coroutine.TedOnActivityResult
 
 class FileChooser(
@@ -12,8 +13,9 @@ class FileChooser(
 ) {
     suspend fun show(
         filePathCallback: ValueCallback<Array<Uri>>,
+        fileChooserParams: FileChooserParams,
     ) {
-        val chooserIntent = createChooserIntent()
+        val chooserIntent = createChooserIntent(fileChooserParams)
         val activityResult = TedOnActivityResult.with(context)
             .startActivityForResult(chooserIntent)
         val fileChooserResult = FileChooserResult.parse(
@@ -26,12 +28,17 @@ class FileChooser(
         )
     }
 
-    private fun createChooserIntent(): Intent {
+    private fun createChooserIntent(fileChooserParams: FileChooserParams): Intent {
         val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
             addCategory(Intent.CATEGORY_OPENABLE)
             type = "*/*"
             val mimeTypes = arrayOf("image/*", "application/pdf")
             putExtra(Intent.EXTRA_MIME_TYPES, mimeTypes)
+
+            val isMultiple = fileChooserParams.mode == FileChooserParams.MODE_OPEN_MULTIPLE
+            if (isMultiple) {
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            }
         }
         return Intent.createChooser(intent, "첨부파일 선택")
     }
@@ -44,7 +51,7 @@ class FileChooser(
             FileChooserResult.Empty -> filePathCallback.onReceiveValue(null)
             is FileChooserResult.File -> {
                 takePersistableUriPermission(fileChooserResult.uri)
-                val result = WebChromeClient.FileChooserParams.parseResult(
+                val result = FileChooserParams.parseResult(
                     fileChooserResult.resultCode,
                     fileChooserResult.data,
                 )

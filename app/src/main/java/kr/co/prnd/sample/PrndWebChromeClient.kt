@@ -19,9 +19,9 @@ class PrndWebChromeClient(
         filePathCallback: ValueCallback<Array<Uri>>?,
         fileChooserParams: FileChooserParams?
     ): Boolean {
-        if (filePathCallback == null) return false
+        if (filePathCallback == null || fileChooserParams == null) return false
         coroutineScope.launch {
-            fileChooser.show(filePathCallback)
+            fileChooser.show(filePathCallback, fileChooserParams)
         }
         return true
     }
